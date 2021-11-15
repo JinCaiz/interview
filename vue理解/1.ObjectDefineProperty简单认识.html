@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.ObjectDefineProperty简单认识</title>
+</head>
+<body>
+  <script>
+    // ----------初级说明-----start--------
+
+    // let obj = {}
+    // Object.defineProperty(obj,'man',{
+    //   configurable:true,
+    //   enumerable:true,
+    //   writable:true,
+    //   value:'Jin'
+    // })
+    // // 1.
+    // console.log(obj);  // {man: "Jin"}
+    // obj.man = 'boy';
+    // console.log(obj);   // {man: "boy"} ，添加 writable:true 后可实现重新设置value值，否则将无法改变value值
+
+
+    // // 2.
+    // delete(obj.man);
+    // console.log(obj);  // {} ,添加 configurable 为true后可进行删除
+
+    // // 3.
+    // // 遍历对象
+    // for(let key in obj){   // man，添加 enumerable:true 后可进行枚举
+    //   console.log(key);
+    // }
+
+    // ----------初级说明------end-------
+
+
+    // ---------改写 getter / setter -----start--------
+
+    // let obj = {}
+    // function defineProperty(data,key,val) {
+    //   Object.defineProperty(data,key,{
+    //     configurable:true,
+    //     enumerable:true,
+    //     get(){
+    //       return val
+    //     },
+    //     set(newValue){  // 新的值
+    //       if(val === newValue){
+    //         return ;
+    //       }
+    //       val = newValue;
+    //     }
+    //   })
+    // }
+
+    // defineProperty(obj,'man','Jin')
+    // console.log(obj);  // 这样即为对象绑定了get / set
+
+    //{}
+    // man: "Jin"
+    // get man: ƒ get()
+    // set man: ƒ set(newValue)
+    // [[Prototype]]: Object
+
+    // ---------改写 getter / setter -----end--------
+
+  </script>
+</body>
+</html>
+
