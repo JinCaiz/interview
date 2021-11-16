@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编译模板</title>
+</head>
+<body>
+  <div id="app">{{waw}}
+    <p>你好，{{a.a}}</p>
+    <p>{{b}}</p>
+  </div>
+
+  <script>
+    let cai = new MyVue({
+      el:'#app',
+      data:{
+        a:{
+          a:'我是a中的a'
+        },
+        b:'我是b',
+        waw:'wawzi'
+      }
+    })
+
+    function MyVue(options = {}){
+      this.$options = options;
+      let data = this.data = this.$options.data;
+      // 为每个值绑定get / set
+      observe(data);
+      // 进行数据代理  
+      for (let key in data){
+        Object.defineProperty(this,key,{
+          enumerable:true,
+          configurable:true,
+          get(){
+            return this.data[key]
+          },
+          set(newVal){
+            this.data[key] = newVal;
+          }
+        })
+      }
+      // cai.data.a.a = '我是a中的a' ，进行代理后 可 cai.a.a = '我是a中的a';
+
+      // 对{{}}进行编译
+      new Compile(options.el,this);
+    }
+
+    function Observe(data){
+      for(let key in data){
+        let val = data[key]
+        if(typeof val === 'object'){observe(val)}
+        Object.defineProperty(data,key,{
+          enumerable:true,
+          configurable:true,
+          get(){
+            return val
+          },
+          set(newVal){
+            if(val === newVal){
+              return ;
+            }
+            val = newVal;
+            observe(val);  // 重新给值赋予 get / set
+          }
+        })
+      }
+    }
+
+    function observe(data){
+      return new Observe(data)
+    }
+
+
+    // 编译，本节新增  
+    function Compile(el,vm){
+      // el 表示替换的范围，也就是元素,例如 id为 app的   
+      // 可以创建文档碎片进行替换  
+      vm.$el = document.querySelector(el);
+      let fragment = document.createDocumentFragment();
+      // console.log(vm.$el.firstChild);  // 拿到文本节点 #text
+      while(child = vm.$el.firstChild){
+        // 将节点先移动到内存中去，打开浏览器会发现节点消失，因为现在是在内存中
+        fragment.appendChild(child)
+      }
+
+      // console.log(fragment.childNodes);
+      replace(fragment)
+      // 替换
+      function replace(fragment){
+        Array.from(fragment.childNodes).forEach(node => {
+          let text = node.textContent;
+          let reg = /\{\{(.*)\}\}/;
+          // console.log(node,node.nodeType);
+          if(node.nodeType === 3 && reg.test(text)){
+            // console.log(RegExp.$1);
+            let arr = RegExp.$1.split('.');  //["a", "a"],vm.a.a
+            console.log(arr);
+            let val = vm;
+            // 循环，实现 .a.a
+            arr.forEach((key)=>{
+              val = val[key]
+            })
+
+            // 替换文本
+            node.textContent = text.replace(reg,val)
+          }
+          if(node.childNodes){
+            replace(node)
+          }
+        });
+
+      }
+      // 再将 文档碎片添加到dom中 
+      vm.$el.appendChild(fragment);
+    }
+  </script>
+</body>
+</html>

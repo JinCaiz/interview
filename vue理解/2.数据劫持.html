@@ -12,7 +12,7 @@
   </div>
   <script>
 
-    let Cai = new MyVue({
+    let cai = new MyVue({
       el:'#app',
       data:{
         a:1,
@@ -27,7 +27,7 @@
       let data = this.data = this.$options.data;
       // 拿到数据后进行观察
       observe(data);
-      // 进行数据代理，原本只能通过 Cai.data.a去访问，现在可以直接通过 Cai.a 进行访问
+      // 进行数据代理，原本只能通过 cai.data.a去访问，现在可以直接通过 cai.a 进行访问
       for(let key in data){
         Object.defineProperty(this,key,{
           enumerable:true,
@@ -58,7 +58,7 @@
               return 
             }
             val = newVal;  // 更新值
-            observe(val);   // 若 Cai.data.a = {j:1},即重新设置对象，则也需要重新绑定 get / set 
+            observe(val);   // 若 cai.data.a = {j:1},即重新设置对象，则也需要重新绑定 get / set 
           }
         })
       }
@@ -70,7 +70,7 @@
     }
 
 
-    // 然后浏览器输入 Cai 实例 
+    // 然后浏览器输入 cai 实例 
 // MyVue {$options: {…}, data: {…}}
   // $options: {el: "#app", data: {…}}
   // data:
